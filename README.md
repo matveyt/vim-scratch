@@ -1,8 +1,6 @@
 ### Description
 
-This Vim plugin provides a "scratch" buffer with "execution" and (optional) "persistence"
-capabilities. It is intended to simplify creating and debugging small script scenarios,
-especially written in VimScript itself.
+This Vim plugin provides a "scratch" buffer with an optional "persistence" capability.
 
 ### Download and Install
 
