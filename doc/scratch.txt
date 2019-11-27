@@ -3,51 +3,30 @@
 ==============================================================================
 OVERVIEW                                                             *scratch*
 
-|Scratch| provides a buffer specially intended for writing scripts. The main
+|Scratch| provides a temporary buffer (see |special-buffers|). The main
 motivation was, of course, to ease VimScript-ing.
 
 ==============================================================================
 FUNCTIONS                                                  *scratch-functions*
 
                                                               *scratch#open()*
-scratch#open()
-    Switches current window to the scratch buffer. If the scratch does not
+scratch#open([{expr}])
+    Switches current window to the scratch buffer. If the buffer does not
     exist yet, it is created.
 
-                                                              *scratch#init()*
-scratch#init([{opt}])
-    Setups the scratch buffer. Calling this function is optional, as
-    |scratch#open()| will ensure the initialization anyway.
+    The optional {expr} is a string containing variable name to save buffer
+    contents. If none is provided, "@s" (a named register "s |quote_alpha|) is
+    assumed. To disable this feature pass an illegal variable name (including
+    empty string) or a read-only variable such as |v:none| or |v:null|.
 
-    {opt} is a Dictionary of options.
-
-    Option  Default             Description ~
-    buffer  "[Scratch]"         Buffer name.
-    key     "<F5>"              The hotkey to execute buffer contents. Both
-                                |Normal-mode| and |Visual-mode| are supported.
-                                In normal mode an optional line [count] is
-                                also supported.
-    prog    N/A                 The interpreter program. If not set the value
-                                of 'syntax' is used (except for "vim", of
-                                course).
-    syntax  "vim"               The value of buffer's 'syntax' option.
-    var     "g:SCRATCH_DATA"    A variable name to hold the scratch buffer
-                                contents. Note that the variable will persist
-                                in |viminfo| file only if |viminfo-!| is set.
-                                Alternatively, Vim |registers| can be used.
-                                For example, >
-                                :call scratch#init({'var': "@s"})
-<                                will save the scratch buffer contents in @s
-                                register which is persistent by default.
+    If the buffer already exists {expr} is ignored.
 
 ==============================================================================
 COMMANDS                                                    *scratch-commands*
 
-Currently the plugin does not define any commands or mappings. But it's very
-easy to add them. For example, >
-
-    command! Scratch call scratch#open()
-    nnoremap <silent><Leader>s :split +Scratch<CR>
+:[range]Scratch [{var}]                                             *:Scratch*
+    Opens scratch buffer in the last window in [range]. Default is the current
+    window. {var} is a variable name as in |scratch#open()|.
 
 ==============================================================================
  vim:tw=78:ts=8:noet:ft=help:norl:

@@ -1,60 +1,65 @@
 " Vim scratch buffer plugin
 " Maintainer:   matveyt
-" Last Change:  2019 Sep 19
+" Last Change:  2019 Nov 27
 " License:      VIM License
 " URL:          https://github.com/matveyt/vim-scratch
 
-" executes line range as VimScript
-function! s:exec() range
-    return execute(getline(a:firstline, a:lastline), '')
-endfunction
+let s:save_cpo = &cpo
+set cpo&vim
 
-" initialization routine
-function! scratch#init(...)
-    " options overwrite
-    let l:opt = extend(copy(get(a:, 1, {})),
-        \ {'buffer': "[Scratch]", 'key': "<F5>", 'syntax': "vim",
-        \  'var': "g:SCRATCH_DATA"}, 'keep')
-    let g:scratch#options = l:opt
-    " create auto-commands
-    augroup scratchPlugin | au!
-        " execute scratch buffer
-        if !empty(l:opt.key)
-            let l:cmd = (l:opt.syntax ==# 'vim') ? "call <SID>exec()" :
-                \ "w !" . get(l:opt, 'prog', l:opt.syntax)
-            execute 'autocmd FileType scratch noremap <silent><buffer>' l:opt.key
-                \ ':%' l:cmd "\<CR>"
-            execute 'autocmd FileType scratch ounmap <buffer>' l:opt.key
-        endif
-        " save scratch buffer in a variable
-        if !empty(l:opt.var)
-            execute 'autocmd BufUnload' escape(l:opt.buffer, '[]') 'let' l:opt.var
-                \ '=join(getbufline(str2nr(expand("<abuf>")), 1, "$"), "\n")'
-        endif
-    augroup end
-endfunction
+let s:magic = "scratch_buffer"
+let s:varcontent = "@s"
 
-" switches current window to the scratch buffer
-function! scratch#open()
-    " ensure initialization
-    if !exists('g:scratch#options')
-        call scratch#init()
-    endif
-    " prepare scratch buffer
-    let l:bufnr = bufadd(g:scratch#options.buffer)
+" switches current window into the scratch buffer
+function! scratch#open(...)
+    " find scratch buffer
+    let l:match = filter(getbufinfo(), {k, v -> has_key(v.variables, s:magic)})
+    let l:bufnr = empty(l:match) ? bufadd('') : l:match[-1].bufnr
+    " prepare it for use
     if !bufloaded(l:bufnr)
+        call setbufvar(l:bufnr, s:magic, 1)
         call setbufvar(l:bufnr, "&bufhidden", "hide")
         call setbufvar(l:bufnr, "&buftype", "nofile")
-        call setbufvar(l:bufnr, "&filetype", "scratch")
         call setbufvar(l:bufnr, "&swapfile", 0)
-        call setbufvar(l:bufnr, "&syntax", g:scratch#options.syntax)
-        call bufload(l:bufnr)
-        " reload buffer from variable
-        if exists(g:scratch#options.var) || g:scratch#options.var[0] ==# '@'
-            call appendbufline(l:bufnr, 1, split(eval(g:scratch#options.var), "\n"))
-            call deletebufline(l:bufnr, 1)
+        if getbufvar(l:bufnr, "did_ftplugin")
+            " ftplugin stuff seems to be there
+            " but we must restore all :syntax elements
+            call setbufvar(l:bufnr, "&syntax", "on")
+        else
+            " set filetype to match the current buffer
+            call setbufvar(l:bufnr, "&filetype", &filetype)
         endif
+        call bufload(l:bufnr)
+        " reload buffer content from variable
+        let l:varname = get(a:, 1, s:varcontent)
+        silent! let l:content = eval(l:varname)
+        if !empty(l:content)
+            if type(l:content) == v:t_string
+                let l:content = split(l:content, "\n")
+            endif
+            silent! call appendbufline(l:bufnr, 1, l:content)
+            silent! call deletebufline(l:bufnr, 1)
+        endif
+        " auto-save buffer content
+        try
+            if l:varname[0] ==# '@'
+                " to register
+                call setreg(l:varname[1:], [])
+                execute printf('autocmd BufUnload <buffer=%d> ++once ' .
+                    \ 'call setreg("%s", getbufline(%d, 1, "$"))',
+                    \ l:bufnr, l:varname[1:], l:bufnr)
+            else
+                " to variable
+                let {l:varname} = []
+                execute printf('autocmd BufUnload <buffer=%d> ++once ' .
+                    \ 'let %s = getbufline(%d, 1, "$")',
+                    \ l:bufnr, l:varname, l:bufnr)
+            endif
+        catch | endtry
     endif
-    " finally switch to scratch buffer
-    call execute(l:bufnr . "buffer")
+    " finally switch the buffer
+    execute 'buffer' l:bufnr
 endfunction
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
