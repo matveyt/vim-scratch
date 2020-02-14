@@ -1,6 +1,6 @@
 " Vim scratch buffer plugin
 " Maintainer:   matveyt
-" Last Change:  2019 Nov 27
+" Last Change:  2020 Feb 12
 " License:      VIM License
 " URL:          https://github.com/matveyt/vim-scratch
 
@@ -13,7 +13,7 @@ let s:varcontent = "@s"
 " switches current window into the scratch buffer
 function! scratch#open(...)
     " find scratch buffer
-    let l:match = filter(getbufinfo(), {k, v -> has_key(v.variables, s:magic)})
+    let l:match = filter(getbufinfo(), {_, v -> has_key(v.variables, s:magic)})
     let l:bufnr = empty(l:match) ? bufadd('') : l:match[-1].bufnr
     " prepare it for use
     if !bufloaded(l:bufnr)

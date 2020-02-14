@@ -1,13 +1,14 @@
 " Vim plugin for easy switching color schemes
 " Maintainer:   matveyt
-" Last Change:  2019 Nov 26
+" Last Change:  2020 Feb 12
 " License:      VIM License
 " URL:          https://github.com/matveyt/vim-scratch
 
-if exists('g:loaded_scratch') || &cp
+if exists('g:loaded_scratch')
     finish
 endif
 let g:loaded_scratch = 1
+
 let s:save_cpo = &cpo
 set cpo&vim
 
