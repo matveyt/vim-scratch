@@ -1,6 +1,6 @@
 " Vim scratch buffer plugin
 " Maintainer:   matveyt
-" Last Change:  2020 Feb 12
+" Last Change:  2020 Jul 28
 " License:      VIM License
 " URL:          https://github.com/matveyt/vim-scratch
 
@@ -21,14 +21,6 @@ function! scratch#open(...)
         call setbufvar(l:bufnr, "&bufhidden", "hide")
         call setbufvar(l:bufnr, "&buftype", "nofile")
         call setbufvar(l:bufnr, "&swapfile", 0)
-        if getbufvar(l:bufnr, "did_ftplugin")
-            " ftplugin stuff seems to be there
-            " but we must restore all :syntax elements
-            call setbufvar(l:bufnr, "&syntax", "on")
-        else
-            " set filetype to match the current buffer
-            call setbufvar(l:bufnr, "&filetype", &filetype)
-        endif
         call bufload(l:bufnr)
         " reload buffer content from variable
         let l:varname = get(a:, 1, s:varcontent)
@@ -59,6 +51,7 @@ function! scratch#open(...)
     endif
     " finally switch the buffer
     execute 'buffer' l:bufnr
+    filetype detect
 endfunction
 
 let &cpo = s:save_cpo
