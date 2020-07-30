@@ -1,6 +1,6 @@
-" Vim plugin for easy switching color schemes
+" Vim scratch buffer plugin
 " Maintainer:   matveyt
-" Last Change:  2020 Feb 12
+" Last Change:  2020 Jul 29
 " License:      VIM License
 " URL:          https://github.com/matveyt/vim-scratch
 
