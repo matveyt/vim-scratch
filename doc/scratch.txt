@@ -1,4 +1,4 @@
-*scratch.txt*           Scratch buffer to assist in scripting
+*scratch.txt*	Scratch buffer to assist in scripting
 
 ==============================================================================
 OVERVIEW                                                             *scratch*
