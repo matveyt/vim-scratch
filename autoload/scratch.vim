@@ -1,6 +1,6 @@
 " Vim scratch buffer plugin
 " Maintainer:   matveyt
-" Last Change:  2020 Jul 29
+" Last Change:  2020 Aug 22
 " License:      VIM License
 " URL:          https://github.com/matveyt/vim-scratch
 
@@ -51,7 +51,9 @@ function! scratch#open(...) abort
     endif
     " finally switch the buffer
     execute 'buffer' l:bufnr
-    filetype detect
+    if empty(&filetype)
+        filetype detect
+    endif
 endfunction
 
 let &cpo = s:save_cpo
