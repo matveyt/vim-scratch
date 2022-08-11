@@ -1,31 +1,31 @@
 *scratch.txt*	Scratch buffer to assist in scripting
 
 ==============================================================================
-OVERVIEW                                                             *scratch*
+OVERVIEW							     *scratch*
 
-|Scratch| provides a temporary buffer (see |special-buffers|). The main
+|Scratch| provides a temporary buffer, see |special-buffers|. The main
 motivation was, of course, to ease VimScript-ing.
 
 ==============================================================================
-FUNCTIONS                                                  *scratch-functions*
+FUNCTIONS						   *scratch-functions*
 
-                                                              *scratch#open()*
+							      *scratch#open()*
 scratch#open([{expr}])
-    Switches current window to the scratch buffer. If the buffer does not
-    exist yet, it is created.
+    Opens scratch buffer in current window. If the buffer does not exist yet,
+    it will be created.
 
     The optional {expr} is a string containing variable name to save buffer
     contents. If none is provided, "@s" (a named register "s |quote_alpha|) is
     assumed. To disable this feature pass an illegal variable name (including
     empty string) or a read-only variable such as |v:none| or |v:null|.
 
-    If the buffer already exists {expr} is ignored.
+    If the buffer already exists then {expr} is ignored.
 
 ==============================================================================
-COMMANDS                                                    *scratch-commands*
+COMMANDS						    *scratch-commands*
 
-:[range]Scratch [{var}]                                             *:Scratch*
-    Opens scratch buffer in the last window in [range]. Default is the current
+:[range]Scratch [{var}]						    *:Scratch*
+    Opens scratch buffer in last window in [range]. Default is the current
     window. {var} is a variable name as in |scratch#open()|.
 
 ==============================================================================

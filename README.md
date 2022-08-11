@@ -1,15 +1,13 @@
 ### Description
 
-This Vim plugin provides a "scratch" buffer with an optional "persistence" capability.
+Vim plugin to provide a "scratch" buffer with an optional "persistence" capability.
 
-### Download and Install
+#### Download and Install
 
-Use whatever plugin manager to pull the master branch.
+```
+$ git clone https://github.com/matveyt/vim-scratch ~/.vim/pack/manual/start/vim-scratch
+```
 
-### Usage
+#### Usage
 
-Read `:help scratch`.
-
-### License
-
-Distributed under the same terms as Vim itself. See `:help license`.
+See `:help scratch.txt`.
